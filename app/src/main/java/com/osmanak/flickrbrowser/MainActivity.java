@@ -2,17 +2,24 @@ package com.osmanak.flickrbrowser;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GetFlickrJsonData.OnDataAvailable{
+public class MainActivity extends AppCompatActivity implements GetFlickrJsonData.OnDataAvailable,
+                                                            RecyclerItemClickListener.OnRecyclerClickListener {
 
     //Set up LOG tag for log messages.
     private static final String TAG = "MainActivity";
+    private FlickrRecyclerViewAdapter mFlickrRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +28,19 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Recycler view does nothing but recycle views. It delegates other responsibilities to other classes.
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        //Layout in Recycler view is delegated by a layout manager
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //Adds the itemTouchListener to the recycler view so it can detect taps.
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, recyclerView, this));
+
+        //Data in RecyclerView is delegated by the Adapter.
+        //Instantiates a new Adapter and associates it with our recyclerView
+        mFlickrRecyclerViewAdapter = new FlickrRecyclerViewAdapter(new ArrayList<Photo>(), this);
+        recyclerView.setAdapter(mFlickrRecyclerViewAdapter);
 
         // Creates a GetRawData object to download the Flickr JSON objects.
 //        GetRawData getRawData = new GetRawData(this);
@@ -63,12 +83,26 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
 
     @Override //Method to accept callback method
     public void onDataAvailable(List<Photo> data, DownloadStatus status) {
+        Log.d(TAG, "onDataAvailable: starts");
         if(status == DownloadStatus.OK){
-            Log.d(TAG, "onDownloadComplete: data is " + data);
+            mFlickrRecyclerViewAdapter.loadNewData(data);
         } else{
             // download or processing failed
             Log.e(TAG, "onDownloadComplete: failed with status " + status);
         }
+        Log.d(TAG, "onDataAvailable: ends");
     }
 
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.d(TAG, "onItemClick: starts");
+        Toast.makeText(MainActivity.this, "Normal tap at position " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        Log.d(TAG, "onItemLongClick: starts");
+        Toast.makeText(MainActivity.this, "Long tap at position " + position, Toast.LENGTH_SHORT).show();
+    }
 }
