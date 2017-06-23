@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
         mFlickrRecyclerViewAdapter = new FlickrRecyclerViewAdapter(new ArrayList<Photo>(), this);
         recyclerView.setAdapter(mFlickrRecyclerViewAdapter);
 
-        // Creates a GetRawData object to download the Flickr JSON objects.
+        // Creates a raw JSON Data object to
 //        GetRawData getRawData = new GetRawData(this);
 //        getRawData.execute("https://api.flickr.com/services/feeds/photos_public.gne?tags=android,nougat,sdk&tagmode=any&format=json&nojsoncallback=1");
 
