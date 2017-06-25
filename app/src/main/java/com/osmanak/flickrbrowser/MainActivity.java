@@ -1,10 +1,9 @@
 package com.osmanak.flickrbrowser;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GetFlickrJsonData.OnDataAvailable,
+public class MainActivity extends BaseActivity implements GetFlickrJsonData.OnDataAvailable,
                                                             RecyclerItemClickListener.OnRecyclerClickListener {
 
     //Set up LOG tag for log messages.
@@ -26,8 +25,8 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
         Log.d(TAG, "onCreate: starts");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        activateToolbar(false);
 
         //Recycler view does nothing but recycle views. It delegates other responsibilities to other classes.
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -103,6 +102,10 @@ public class MainActivity extends AppCompatActivity implements GetFlickrJsonData
     @Override
     public void onItemLongClick(View view, int position) {
         Log.d(TAG, "onItemLongClick: starts");
-        Toast.makeText(MainActivity.this, "Long tap at position " + position, Toast.LENGTH_SHORT).show();
+        Intent intent  = new Intent(this, PhotoDetailActivity.class);
+
+        //Adds photo data to the intent
+        intent.putExtra(PHOTO_TRANSFER, mFlickrRecyclerViewAdapter.getPhoto(position));
+        startActivity(intent);
     }
 }

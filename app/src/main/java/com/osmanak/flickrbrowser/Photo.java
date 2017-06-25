@@ -1,10 +1,14 @@
 package com.osmanak.flickrbrowser;
 
+import java.io.Serializable;
+
 /**
  * Created by Osman Ak on 6/8/2017.
  */
 
-class Photo {
+class Photo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String mTitle;
     private String mAuthor;
