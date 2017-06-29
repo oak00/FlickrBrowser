@@ -41,29 +41,34 @@ class FlickrRecyclerViewAdapter extends RecyclerView.Adapter<FlickrRecyclerViewA
     @Override // Called by the layout manager (recycler) when it wants new data in an existing row
     public void onBindViewHolder(FlickrImageViewHolder holder, int position) {
 
-        //Retrieve current photo object from the list
-        Photo photoItem = mPhotosList.get(position);
-        Log.d(TAG, "onBindViewHolder: " + photoItem.getTitle() + " --> " + position);
+        //Checks to see if any photos were returned.
+        if((mPhotosList == null) || (mPhotosList.size() == 0)){
+            holder.thumbnail.setImageResource(R.drawable.placeholder);
+            holder.title.setText(R.string.empty_photo);
+        } else {
+            //Retrieve current photo object from the list
+            Photo photoItem = mPhotosList.get(position);
+            Log.d(TAG, "onBindViewHolder: " + photoItem.getTitle() + " --> " + position);
 
-        //Retrieves a singleton Picasso object
-        Picasso.with(mContext)
-                //Loads an image from a URL, and stores it in the image field of the Photo object
-                .load(photoItem.getImage())
-                 //Sets placeholder image to be used if there is an error
-                .error(R.drawable.placeholder)
-                //Sets placeholder image to be used while image is downloading
-                .placeholder(R.drawable.placeholder)
-                //Stores the downloaded image into the imageView widget in the ViewHolder
-                .into(holder.thumbnail);
+            //Retrieves a singleton Picasso object
+            Picasso.with(mContext)
+                    //Loads an image from a URL, and stores it in the image field of the Photo object
+                    .load(photoItem.getImage())
+                    //Sets placeholder image to be used if there is an error
+                    .error(R.drawable.placeholder)
+                    //Sets placeholder image to be used while image is downloading
+                    .placeholder(R.drawable.placeholder)
+                    //Stores the downloaded image into the imageView widget in the ViewHolder
+                    .into(holder.thumbnail);
 
-        //Puts the title into the textView
-        holder.title.setText(photoItem.getTitle());
-
+            //Puts the title into the textView
+            holder.title.setText(photoItem.getTitle());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return ((mPhotosList != null) && (mPhotosList.size() != 0) ? mPhotosList.size():0 );
+        return ((mPhotosList != null) && (mPhotosList.size() != 0) ? mPhotosList.size(): 1 );
     }
 
     //Provides the adapter with a new list when the query changes
